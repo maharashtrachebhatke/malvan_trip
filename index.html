@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malvan Adventure Trip Details</title>
+    <style>
+        /* --- Basic Setup --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* --- Header --- */
+        .header {
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            color: #ffffff;
+            padding: 2rem 2.5rem;
+            text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 1.5rem; font-weight: 500; }
+        .header h2 { margin: 0.5rem 0; font-size: 2.5rem; font-weight: 700; }
+        .header p { margin: 0; font-size: 1.2rem; opacity: 0.9; }
+        .date-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* --- Tabs Navigation --- */
+        .tabs { display: flex; background-color: #f1f1f1; border-bottom: 1px solid #ddd; }
+        .tab-button {
+            flex: 1; padding: 1rem; border: none; background: none;
+            cursor: pointer; font-size: 1rem; font-weight: 600;
+            color: #555; transition: all 0.3s ease; position: relative;
+        }
+        .tab-button:hover { background-color: #e9e9e9; }
+        .tab-button.active { color: #007bff; }
+        .tab-button.active::after {
+            content: ''; position: absolute; bottom: -1px; left: 0;
+            width: 100%; height: 3px; background-color: #007bff;
+        }
+
+        /* --- Tab Content --- */
+        .tab-content { display: none; padding: 2.5rem; }
+        .tab-content.active { display: block; }
+        .tab-content h3 {
+            font-size: 1.8rem; color: #007bff; border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem; margin-top: 0; margin-bottom: 1.5rem;
+        }
+
+        /* --- Highlights Section --- */
+        .highlights-list {
+            list-style: none; padding: 0; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;
+        }
+        .highlights-list li {
+            background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px;
+            padding: 1rem; display: flex; align-items: center; font-weight: 500;
+        }
+        .highlights-list li span { font-size: 1.5rem; margin-right: 0.75rem; }
+
+        /* --- Inclusions/Exclusions --- */
+        .inc-exc-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .list-box { border-radius: 8px; padding: 1.5rem; }
+        .list-box.inclusions { background-color: #e6f7ff; border: 1px solid #b3e0ff; }
+        .list-box.exclusions { background-color: #fff4f4; border: 1px solid #ffcccc; }
+        .list-box h4 { font-size: 1.3rem; margin-top: 0; margin-bottom: 1rem; }
+        .list-box.inclusions h4 { color: #0056b3; }
+        .list-box.exclusions h4 { color: #d9534f; }
+        .list-box ul { list-style: none; padding: 0; margin: 0; }
+        .list-box li { position: relative; padding-left: 1.8rem; margin-bottom: 0.75rem; }
+        .list-box li::before {
+            position: absolute; left: 0; top: 2px; font-size: 1.2rem;
+        }
+        .list-box.inclusions li::before { content: '✅'; }
+        .list-box.exclusions li::before { content: '❌'; }
+
+        /* --- Itinerary Timeline --- */
+        .timeline { position: relative; margin: 0; padding: 0; list-style: none; }
+        .timeline::before {
+            content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+            width: 4px; background: #e0e0e0; border-radius: 2px;
+        }
+        .timeline-item { position: relative; margin-bottom: 2rem; padding-left: 3rem; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: 0; top: 5px; width: 24px; height: 24px;
+            border-radius: 50%; background: #007bff; border: 4px solid #ffffff;
+            box-shadow: 0 0 0 3px #e0e0e0;
+        }
+        .timeline-day {
+            font-size: 1.5rem; font-weight: 700; color: #333; margin: 0 0 1rem 0;
+        }
+        .timeline-event {
+            background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px;
+            padding: 1rem 1.5rem;
+        }
+        .timeline-event strong {
+            display: block; font-size: 1.1rem; color: #007bff; margin-bottom: 0.25rem;
+        }
+        .timeline-event p { margin: 0; color: #555; }
+
+        /* --- Pricing & Booking --- */
+        .pricing-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
+        }
+        .calculator-box {
+            background-color: #f9f9f9; border: 1px solid #ddd;
+            border-radius: 12px; padding: 2rem;
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label {
+            display: block; font-weight: 600;
+            margin-bottom: 0.5rem; color: #555;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%; padding: 0.75rem; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 1rem; box-sizing: border-box;
+            background-color: #fff;
+        }
+        
+        .checkbox-wrapper {
+            display: flex; align-items: center; background-color: #f0f0f0;
+            padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #ddd;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .checkbox-wrapper:hover { background-color: #e9e9e9; }
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 1.25em; height: 1.25em; margin-right: 0.75rem; cursor: pointer;
+        }
+        .checkbox-wrapper label {
+            margin-bottom: 0; font-weight: 500; color: #333;
+            cursor: pointer; flex: 1;
+        }
+        .checkbox-wrapper.checked {
+            background-color: #fff4f4; border-color: #ffcccc;
+        }
+        .checkbox-wrapper.checked label { color: #d9534f; font-weight: 600; }
+
+        .result-box {
+            background-color: #e6f7ff; border: 1px solid #b3e0ff; border-radius: 8px;
+            padding: 1.5rem; text-align: center; margin-top: 1.5rem;
+        }
+        .result-box h4 {
+            margin: 0 0 0.5rem 0; color: #0056b3;
+            font-size: 1rem; text-transform: uppercase;
+        }
+        .result-box .total-price {
+            font-size: 2.5rem; font-weight: 700; color: #007bff;
+        }
+        
+        .booking-info {
+            border: 2px dashed #007bff; background: #f4faff;
+            border-radius: 12px; padding: 2rem;
+        }
+        .booking-info h4 { font-size: 1.3rem; color: #007bff; margin-top: 0; }
+        .booking-info ol { padding-left: 1.5rem; }
+        .booking-info li { margin-bottom: 1rem; line-height: 1.5; }
+        .contact {
+            font-size: 1.1rem; font-weight: 600;
+            text-align: center; margin-top: 1.5rem;
+        }
+        
+        /* --- New Submit Button & Status Styles --- */
+        .submit-btn {
+            display: block; width: 100%; padding: 1rem;
+            background-color: #28a745; color: #ffffff;
+            border: none; border-radius: 8px; font-size: 1.2rem;
+            font-weight: 600; cursor: pointer;
+            margin-top: 1.5rem; transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover { background-color: #218838; }
+        .submit-btn:disabled { background-color: #aaa; cursor: not-allowed; }
+        .submit-status {
+            text-align: center; margin-top: 1rem;
+            font-weight: 600;
+        }
+        .submit-status.success { color: #28a745; }
+        .submit-status.error { color: #d9534f; }
+
+
+        /* --- Responsive Design (Mobile-Friendly) --- */
+        @media (max-width: 768px) {
+            .tabs { flex-direction: column; }
+            .tab-button { text-align: left; padding: 1rem 1.5rem; }
+            .tab-button.active::after {
+                width: 4px; height: 100%; left: -1px; bottom: 0;
+            }
+            .inc-exc-container,
+            .pricing-container {
+                grid-template-columns: 1fr;
+            }
+            .tab-content { padding: 1.5rem; }
+            .header { padding: 1.5rem; }
+            .header h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>महाराष्ट्र चे भटके 🚶‍♂️🌄</h1>
+            <h2>Malvan Adventure Trip</h2>
+            <p>"Your Weekend Escape to the Konkan Coast" 🌅</p>
+            <div class="date-badge">📅 29th & 30th November 2025</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'details')">Trip Details</button>
+            <button class="tab-button" onclick="openTab(event, 'itinerary')">Itinerary</button>
+            <button class="tab-button" onclick="openTab(event, 'pricing')">Booking & Pricing</button>
+        </div>
+
+        <div id="details" class="tab-content active">
+            <h3>⭐ ठळक मुद्दे (Highlights)</h3>
+            <ul class="highlights-list">
+                <li><span>🤿</span> Scuba Diving & Watersports</li>
+                <li><span>🐬</span> Dolphin Safari</li>
+                <li><span>🏰</span> Sindhudurg Fort Visit</li>
+                <li><span>🌇</span> Rock Garden & Rajkot Fort</li>
+                <li><span>🛕</span> Ganesh Mandir & Malvan Market</li>
+                <li><span>🙏</span> Bharadi Devi Temple</li>
+                <li><span>🍤</span> Authentic Malvani Cuisine</li>
+                <li><span>🎶</span> Fun Games & Group Activities</li>
+            </ul>
+            <br><hr><br>
+            <div class="inc-exc-container">
+                <div class="list-box inclusions">
+                    <h4>✨ काय समाविष्ट आहे? (Inclusions)</h4>
+                    <ul>
+                        <li>Mumbai ↔️ Malvan AC Sleeper Bus (If opted)</li>
+                        <li>AC Homestay Accommodation</li>
+                        <li>Watersports (Banana, Bumper, Parasailing, Jet Ski)</li>
+                        <li>Scuba Diving</li>
+                        <li>Dolphin Safari</li>
+                        <li>All Meals (2 Breakfasts, 1 Lunches, 1 Dinner)</li>
+                        <li>Bhatke’s Expertise & Group Games</li>
+                        <li>Entry / Administration Fees</li>
+                        <li>First Aid Support</li>
+                    </ul>
+                </div>
+                <div class="list-box exclusions">
+                    <h4>🚫 काय समाविष्ट नाही? (Exclusions)</h4>
+                    <ul>
+                        <li>Personal expenses</li>
+                        <li>Meals during travel</li>
+                        <li>Anything not mentioned in inclusions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="itinerary" class="tab-content">
+            <h3>📋 सविस्तर प्रवासाचा कार्यक्रम (Itinerary)</h3>
+            <ul class="timeline">
+                <li class="timeline-item"><div class="timeline-day">🛣️ DAY 0 – FRIDAY NIGHT</div><div class="timeline-event"><strong>🚌 Departure from Mumbai (9:00 PM)</strong><p>Assemble at the meeting point and begin the overnight journey...</p></div></li>
+                <li class="timeline-item"><div class="timeline-day">🏖️ DAY 1 – SATURDAY</div><div class="timeline-event"><strong>🌅 Arrival in Malvan (9:00 AM)</strong><p>Freshen up & enjoy a light breakfast.</p></div><div class="timeline-event"><strong>🪂 Watersports Adventure (10:00 AM – 2:30 PM)</strong><p>Experience 5 thrilling water sports...</p></div><div class="timeline-event"><strong>🍽️ Lunch (3:00 PM)</strong><p>Relish authentic Konkani-style lunch.</p></div><div class="timeline-event"><strong>🌇 Evening Exploration (4:30 PM – 8:00 PM)</strong><p>Visit Rock Garden, Rajkot Fort, Ganesh Mandir...</p></div><div class="timeline-event"><strong>🍲 Dinner (8:30 PM)</strong><p>Enjoy a home-style dinner followed by games...</p></div></li>
+                <li class="timeline-item"><div class="timeline-day">🐬 DAY 2 – SUNDAY</div><div class="timeline-event"><strong>🐋 Dolphin Ride (6:30 AM – 9:00 AM)</strong><p>Enjoy an exciting Dolphin Safari.</p></div><div class="timeline-event"><strong>🧴 Freshen Up & Breakfast (9:30 AM – 11:00 AM)</strong><p>Return, freshen up & have a hearty breakfast.</p></div><div class="timeline-event"><strong>🏰 Sindhudurg Fort Visit (11:00 AM – 1:00 PM)</strong><p>Explore the majestic Sindhudurg Fort...</p></div><div class="timeline-event"><strong>🍽️ Lunch (2:00 PM)</strong><p>Enjoy delicious Malvani cuisine.</p></div><div class="timeline-event"><strong>🚌 Departure from Malvan (4:00 PM)</strong><p>Begin the scenic return journey to Mumbai.</p></div></li>
+                <li class="timeline-item"><div class="timeline-day">🌃 MONDAY MORNING</div><div class="timeline-event"><strong>📍 Arrival in Mumbai (4:00 AM)</strong><p>End of a memorable Malvan trip...</p></div></li>
+            </ul>
+        </div>
+
+        <div id="pricing" class="tab-content">
+            <h3>💰 Booking & Pricing</h3>
+            <div class="pricing-container">
+                
+                <div class="calculator-box">
+                    <h4>Calculate Your Price & Book</h4>
+                    
+                    <form id="bookingForm">
+                        <div class="form-group">
+                            <label for="userName">👤 तुमचे नाव (Your Name):</label>
+                            <input type="text" id="userName" name="userName" placeholder="Your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userMobile">📞 मोबाईल नंबर (Mobile Number):</label>
+                            <input type="tel" id="userMobile" name="userMobile" placeholder="Your 10-digit number" required>
+                        </div>
+                        
+                        <hr style="border:0; border-top: 1px solid #ddd; margin: 2rem 0;">
+                        
+                        <div class="form-group">
+                            <label for="people">👥 व्यक्तींची संख्या (Number of People):</label>
+                            <input type="number" id="people" name="people" value="1" min="1" required>
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="travel">🚌 प्रवासाचा पर्याय (Travel Package):</label>
+                            <select id="travel" name="travel">
+                                <option value="4499">From Malvan (Self Travel) - ₹4499</option>
+                                <option value="6499">From Mumbai (With AC Bus) - ₹6499</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="foodChoice">🍽️ जेवणाचा प्रकार (Food Choice):</label>
+                            <select id="foodChoice" name="foodChoice">
+                                <option value="0">Veg (Standard)</option>
+                                <option value="500">Non-Veg (+₹500)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox-wrapper" id="watersportsWrapper">
+                                <input type="checkbox" id="excludeWatersports" name="excludeWatersports">
+                                <label for="excludeWatersports">🤿 Watersports वगळा? (-₹1000)</label>
+                            </div>
+                        </div>
+
+                        <div class="result-box">
+                            <h4>Total Estimated Cost</h4>
+                            <div id="totalPrice" class="total-price">₹4,499</div>
+                        </div>
+                        
+                        <button type="submit" id="submitButton" class="submit-btn">Submit Booking Inquiry</button>
+                        <p id="submitStatus" class="submit-status"></p>
+
+                    </form>
+                </div>
+                <div class="booking-info">
+                    <h4>💳 Booking Process</h4>
+                    <ol>
+                        <li>Pay ₹3000 advance via GPay / Paytm to <strong>Prathamesh – 7400259238</strong>.</li>
+                        <li>DM your Name, WhatsApp Number & Pickup Point with screenshot.</li>
+                        <li>Fill the declaration form (shared post-registration).</li>
+                        <li>Join the exclusive Trip WhatsApp Group.</li>
+                    </ol>
+                    <div class="contact">
+                        📞 For Bookings & Queries:<br>
+                        <strong>Prathamesh – 7400259238</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Tab Script ---
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].className = tabbuttons[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // --- Calculator Script ---
+        const peopleInput = document.getElementById('people');
+        const travelInput = document.getElementById('travel');
+        const foodInput = document.getElementById('foodChoice');
+        const watersportsCheckbox = document.getElementById('excludeWatersports');
+        const watersportsWrapper = document.getElementById('watersportsWrapper');
+        const totalPriceDisplay = document.getElementById('totalPrice');
+
+        function calculateTotal() {
+            const numPeople = parseInt(peopleInput.value) || 0;
+            const basePackagePrice = parseInt(travelInput.value);
+            const foodAddOn = parseInt(foodInput.value);
+            const isWatersportsExcluded = watersportsCheckbox.checked;
+            const watersportsCost = 1000;
+
+            let singlePersonPrice = basePackagePrice + foodAddOn;
+            
+            if (isWatersportsExcluded) {
+                singlePersonPrice -= watersportsCost;
+                watersportsWrapper.classList.add('checked');
+            } else {
+                watersportsWrapper.classList.remove('checked');
+            }
+
+            const total = numPeople * singlePersonPrice; 
+            totalPriceDisplay.textContent = '₹' + total.toLocaleString('en-IN');
+        }
+
+        // --- Event Listeners for Calculator ---
+        peopleInput.addEventListener('input', calculateTotal);
+        travelInput.addEventListener('change', calculateTotal);
+        foodInput.addEventListener('change', calculateTotal);
+        watersportsCheckbox.addEventListener('change', calculateTotal);
+        
+        watersportsWrapper.addEventListener('click', function(event) {
+            if (event.target.id !== 'excludeWatersports') {
+                watersportsCheckbox.checked = !watersportsCheckbox.checked;
+                watersportsCheckbox.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Initial calculation on page load
+        calculateTotal();
+
+
+        // --- NEW: Form Submission Script ---
+        const form = document.getElementById('bookingForm');
+        const submitButton = document.getElementById('submitButton');
+        const submitStatus = document.getElementById('submitStatus');
+        
+        // *** YOUR SPECIFIC URL IS NOW INCLUDED ***
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuW5XeL_9DOwm--ckkxbdeBpmK8u09Kfdwnofuh3g5Vy6__cUhsDHpmW3EZBPUkevWeQ/exec'; 
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop default page reload
+
+            // Disable button and show sending message
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            submitStatus.textContent = 'Submitting your inquiry...';
+            submitStatus.className = 'submit-status';
+
+            // Get all values from the form
+            const travelOptionText = travelInput.options[travelInput.selectedIndex].text;
+            const foodOptionText = foodInput.options[foodInput.selectedIndex].text;
+
+            // Create FormData object
+            const formData = new FormData(form);
+            
+            // Append calculated/text values
+            formData.append('TravelOption', travelOptionText);
+            formData.append('FoodChoice', foodOptionText);
+            formData.append('WatersportsExcluded', watersportsCheckbox.checked ? 'Yes (-1000)' : 'No');
+            formData.append('TotalPrice', totalPriceDisplay.textContent);
+            
+            // Send data using fetch
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    // Success
+                    submitStatus.textContent = 'Inquiry sent successfully!';
+                    submitStatus.className = 'submit-status success';
+                    form.reset(); // Clear the form fields
+                    calculateTotal(); // Recalculate price to default
+                } else {
+                    // Error from script
+                    throw new Error(data.message || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                // Network or other error
+                submitStatus.textContent = 'Error sending. Please try again.';
+                submitStatus.className = 'submit-status error';
+                console.error('Error!', error.message);
+            })
+            .finally(() => {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Booking Inquiry';
+            });
+        });
+
+    </script>
+</body>
+</html>
